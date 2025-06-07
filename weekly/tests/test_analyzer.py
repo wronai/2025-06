@@ -6,23 +6,9 @@ from unittest.mock import patch, MagicMock
 
 from weekly.core.repo_status import RepoStatus
 from weekly.git_scanner import GitRepo, ScanResult
+from weekly import GitAnalyzer, CommitStats
 from datetime import datetime, timedelta
 from pathlib import Path
-
-# Mock classes for testing
-class GitAnalyzer:
-    def __init__(self, repo_path: Path):
-        self.repo_path = Path(repo_path)
-
-    def analyze(self) -> RepoStatus:
-        return RepoStatus(name="test-repo")
-
-class CommitStats:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-    
-    def to_dict(self):
-        return self.__dict__
 
 def test_commit_stats_initialization():
     """Test CommitStats initialization and to_dict method."""
