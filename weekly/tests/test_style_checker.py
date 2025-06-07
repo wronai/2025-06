@@ -208,20 +208,21 @@ def test_parse_flake8_output(style_checker):
 
 def test_parse_mypy_output(style_checker):
     """Test parsing mypy output."""
-    output = """
-    /path/to/file.py:10: error: Incompatible return value type (got "int", expected "str")  [return-value]
-    /path/to/file.py: note: In function "example"
-    /path/to/file.py:5: note: Called from here
-    /path/to/file.py:10: note: Revealed type is "builtins.int"
-    /path/to/file.py:10: note: "return" has type "int"; expected "str"
-    Found 1 error in 1 file (checked 1 source file)
-    """
+    # Note: The output must not have leading whitespace for the parser to work correctly
+    output = (
+        '/path/to/file.py:10: error: Incompatible return value type (got "int", expected "str")  [return-value]\n'
+        '/path/to/file.py: note: In function "example"\n'
+        '/path/to/file.py:5: note: Called from here\n'
+        '/path/to/file.py:10: note: Revealed type is "builtins.int"\n'
+        '/path/to/file.py:10: note: "return" has type "int"; expected "str"\n'
+        'Found 1 error in 1 file (checked 1 source file)'
+    )
     
     # Parse the output
     style_checker._parse_mypy_output(output)
     
     # Verify that the issue was parsed correctly
-    assert len(style_checker.issues) >= 1  # There might be multiple issues parsed
+    assert len(style_checker.issues) >= 1, "No issues were parsed from the mypy output"
     
     # Find the error issue (not the note)
     error_issues = [issue for issue in style_checker.issues if issue.code == "TYP100"]

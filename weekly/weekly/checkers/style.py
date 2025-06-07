@@ -222,33 +222,36 @@ class StyleChecker(BaseChecker):
             if not line or line.startswith("Found ") or line == "Success: no issues found in 1 source file":
                 continue
                 
-            # Format: filename.py:line:col: error: Message
+            # Format: filename.py:line: error: Message
             if ": error:" in line or ": note:" in line:
+                # Split on first 3 colons to separate file, line, type, and message
                 parts = line.split(":", 3)
+                
                 if len(parts) >= 4:
                     file_path = parts[0].strip()
                     try:
                         line_num = int(parts[1].strip())
-                        # Column might be present but we'll default to 0 if not
-                        try:
-                            col_num = int(parts[2].strip())
-                            message = parts[3].split(":", 1)[1].strip()
-                        except (IndexError, ValueError):
-                            col_num = 0
-                            message = parts[2].split(":", 1)[1].strip()
-                            
-                        error_type = "error" if ": error:" in line else "note"
+                        error_type = parts[2].strip()  # 'error' or 'note'
+                        message = parts[3].strip()
                         
-                        self.issues.append(
-                            StyleIssue(
-                                file_path=file_path,
-                                line=line_num,
-                                column=col_num,
-                                code=f"TYP100" if error_type == "error" else "TYP101",
-                                message=message,
-                                tool="mypy"
+                        # If there's a code in brackets at the end, extract it
+                        code = "TYP100"  # Default code
+                        if "[" in message and "]" in message:
+                            code = message[message.rfind("[")+1:message.rfind("]")]
+                            message = message[:message.rfind("[")].strip()
+                        
+                        # Only add error issues, not notes
+                        if error_type == "error":
+                            self.issues.append(
+                                StyleIssue(
+                                    file_path=file_path,
+                                    line=line_num,
+                                    column=0,  # mypy doesn't provide column info
+                                    code=code,
+                                    message=message,
+                                    tool="mypy"
+                                )
                             )
-                        )
                     except (ValueError, IndexError) as e:
                         # Skip lines that don't match the expected format
                         continue
