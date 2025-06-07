@@ -112,36 +112,24 @@ class GitRepo:
             return subprocess.CompletedProcess(args=command, returncode=1)
 
 
+@dataclass
 class ScanResult:
     """Represents the result of scanning a repository."""
     
-    def __init__(self, repo: 'GitRepo', results: Optional[Dict[str, Any]] = None, error: Optional[str] = None):
-        """Initialize a scan result.
+    repo: 'GitRepo'
+    results: Dict[str, Any] = field(default_factory=dict)
+    error: Optional[str] = None
+    
+    def __post_init__(self):
+        """Initialize the scan result with default values."""
+        print(f"[DEBUG] Initializing ScanResult with repo={self.repo}, results={self.results}, error={self.error}")
+        print(f"[DEBUG] Type of repo: {type(self.repo).__name__}")
+        print(f"[DEBUG] Type of results: {type(self.results).__name__ if self.results is not None else 'None'}")
+        print(f"[DEBUG] Type of error: {type(self.error).__name__ if self.error is not None else 'None'}")
         
-        Args:
-            repo: The Git repository that was scanned
-            results: Dictionary of check results
-            error: Error message if the scan failed
-        """
-        print(f"[DEBUG] Initializing ScanResult with repo={repo}, results={results}, error={error}")
-        print(f"[DEBUG] Type of repo: {type(repo).__name__}")
-        print(f"[DEBUG] Type of results: {type(results).__name__ if results is not None else 'None'}")
-        print(f"[DEBUG] Type of error: {type(error).__name__ if error is not None else 'None'}")
-        
-        try:
-            print("[DEBUG] Setting repo attribute...")
-            self.repo = repo
-            print("[DEBUG] Setting results attribute...")
-            self.results = results or {}
-            print("[DEBUG] Setting error attribute...")
-            self.error = error
-            print("[DEBUG] ScanResult initialization complete")
-        except Exception as e:
-            print(f"[ERROR] Error in ScanResult.__init__: {e}")
-            print(f"[ERROR] Exception type: {type(e).__name__}")
-            import traceback
-            traceback.print_exc()
-            raise
+        # Ensure results is always a dictionary
+        if self.results is None:
+            self.results = {}
     
     def to_dict(self) -> Dict:
         """Convert the result to a dictionary."""

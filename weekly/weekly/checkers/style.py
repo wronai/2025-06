@@ -53,8 +53,11 @@ class StyleChecker(BaseChecker):
     severity = CheckSeverity.MEDIUM
     
     def __init__(self, config: Optional[Dict] = None):
-        """Initialize the style checker."""
-        super().__init__(config or {})
+        """Initialize the style checker.
+        
+        Args:
+            config: Optional configuration dictionary for the checker
+        """
         self.console = Console()
         self.issues: List[StyleIssue] = []
     

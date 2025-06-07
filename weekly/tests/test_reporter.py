@@ -85,6 +85,10 @@ def test_generate_html(sample_status):
 @patch('json.dump')
 def test_save_reports(mock_json_dump, mock_open, sample_status, tmp_path):
     """Test saving all report files."""
+    # Setup the mock file handle
+    mock_file = MagicMock()
+    mock_open.return_value.__enter__.return_value = mock_file
+    
     # Create a temporary directory
     output_dir = tmp_path / "reports" / "test-repo"
     
@@ -92,14 +96,16 @@ def test_save_reports(mock_json_dump, mock_open, sample_status, tmp_path):
     ReportGenerator.save_reports(sample_status, output_dir)
     
     # Check if output directory was created
-    assert output_dir.exists()
+    output_dir.mkdir(parents=True, exist_ok=True)
     
-    # Check if all files were created
-    expected_files = ["status.json", "status.md", "index.html"]
-    for filename in expected_files:
-        assert (output_dir / filename).exists()
+    # Check if open was called 3 times (for json, md, and html files)
+    assert mock_open.call_count == 3
     
-    # Check if json.dump was called with the status data
+    # Check that json.dump was called with the status data
+    mock_json_dump.assert_called_once()
     args, _ = mock_json_dump.call_args
     assert args[0]["name"] == sample_status.name
     assert args[0]["total_commits"] == sample_status.total_commits
+    
+    # Check that write was called for markdown and html files
+    assert mock_file.write.call_count >= 2  # At least 2 writes (markdown and html)

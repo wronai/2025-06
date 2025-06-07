@@ -45,6 +45,38 @@ class ReportGenerator:
 *[View full history in the JSON file]*
 """
 
+    @classmethod
+    def save_reports(cls, status: 'RepoStatus', output_dir: Path) -> None:
+        """Save all report files to the specified directory.
+        
+        Args:
+            status: The repository status to generate reports from
+            output_dir: Directory to save the report files
+        """
+        # Create output directory if it doesn't exist
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate markdown content
+        markdown_content = cls.generate_markdown(status)
+        
+        # Generate HTML content
+        html_content = cls.generate_html(status, markdown_content)
+        
+        # Save JSON report
+        json_path = output_dir / "status.json"
+        with open(json_path, 'w') as f:
+            json.dump(status.to_dict(), f, indent=2)
+        
+        # Save Markdown report
+        md_path = output_dir / "status.md"
+        with open(md_path, 'w') as f:
+            f.write(markdown_content)
+        
+        # Save HTML report
+        html_path = output_dir / "index.html"
+        with open(html_path, 'w') as f:
+            f.write(html_content)
+
     @staticmethod
     def generate_html(status: 'RepoStatus', markdown_content: str) -> str:
         """Generate HTML report with download option."""
