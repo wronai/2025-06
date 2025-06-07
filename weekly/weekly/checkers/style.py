@@ -58,6 +58,8 @@ class StyleChecker(BaseChecker):
         Args:
             config: Optional configuration dictionary for the checker
         """
+        # Store config
+        self.config = config or {}
         self.console = Console()
         self.issues: List[StyleIssue] = []
     
