@@ -20,6 +20,7 @@ from .checkers.style import StyleChecker
 from .core.project import Project
 from .core.report import Report, CheckResult
 from .core.analyzer import analyze_project
+from .core.repo_status import RepoStatus
 
 # Import Git scanner and report generator
 from .git_scanner import GitRepo, GitScanner, ScanResult
@@ -33,7 +34,8 @@ __all__ = [
     'analyze_project',
     'Project',
     'Report',
-    'main'  # Export main as cli
+    'RepoStatus',
+    'main',  # Export main as cli
     'CheckResult',
     
     # Checkers

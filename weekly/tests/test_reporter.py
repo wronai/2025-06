@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from unittest.mock import patch, MagicMock
 
-from weekly.analyzer import RepoStatus
+from weekly.core.repo_status import RepoStatus
 from weekly.reporter import ReportGenerator
 
 @pytest.fixture

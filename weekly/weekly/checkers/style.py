@@ -54,7 +54,7 @@ class StyleChecker(BaseChecker):
     
     def __init__(self, config: Optional[Dict] = None):
         """Initialize the style checker."""
-        super().__init__(config)
+        super().__init__(config or {})
         self.console = Console()
         self.issues: List[StyleIssue] = []
     
