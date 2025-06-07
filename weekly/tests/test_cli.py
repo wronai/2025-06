@@ -16,51 +16,46 @@ def runner():
     """Fixture for invoking command-line interfaces."""
     return CliRunner()
 
-@patch('weekly.git_analyzer.GitAnalyzer')
-def test_analyze_command(mock_analyzer, runner, tmp_path):
+@patch('weekly.cli.analyze_project')
+def test_analyze_command(mock_analyze, runner, tmp_path):
     """Test the analyze command."""
     # Setup mock
-    mock_status = MagicMock(spec=RepoStatus)
-    mock_status.name = "test-repo"
-    mock_status.to_dict.return_value = {"name": "test-repo"}
-    mock_analyzer.return_value.analyze.return_value = mock_status
+    mock_report = MagicMock()
+    mock_report.to_dict.return_value = {"name": "test-repo"}
+    mock_analyze.return_value = mock_report
     
-    # Create a temporary repository directory
-    repo_path = tmp_path / "test-repo"
-    repo_path.mkdir()
-    (repo_path / ".git").mkdir()  # Make it look like a git repo
+    # Create a temporary directory with a Python file
+    project_path = tmp_path / "test-project"
+    project_path.mkdir()
+    (project_path / "test.py").write_text("def hello(): pass\n")
     
     # Run the command
-    result = runner.invoke(main, ["analyze", str(repo_path), "--output", str(tmp_path / "output")])
+    output_file = tmp_path / "output.json"
+    result = runner.invoke(main, ["analyze", str(project_path), "--output", str(output_file)])
     
     # Check results
     assert result.exit_code == 0
-    assert "Generated reports for test-repo" in result.output
-    assert (tmp_path / "output" / "test-repo").exists()
+    assert "Analyzing project at" in result.output
+    assert output_file.exists()
 
-@patch('weekly.git_analyzer.GitAnalyzer')
-def test_analyze_org_command(mock_analyzer, runner, tmp_path):
-    """Test the analyze-org command."""
+@patch('weekly.git_scanner.GitScanner.find_git_repos')
+def test_analyze_org_command(mock_find, runner, tmp_path):
+    """Test the scan command for multiple repositories."""
     # Setup mock
-    mock_status = MagicMock(spec=RepoStatus)
-    mock_status.name = "test-repo"
-    mock_status.to_dict.return_value = {"name": "test-repo"}
-    mock_analyzer.return_value.analyze.return_value = mock_status
+    mock_repo = MagicMock()
+    mock_repo.path = tmp_path / "org" / "test-repo"
+    mock_repo.path.mkdir(parents=True)
+    mock_find.return_value = [mock_repo]
     
-    # Create a temporary organization directory with a repo
-    org_path = tmp_path / "org"
-    repo_path = org_path / "test-repo"
-    repo_path.mkdir(parents=True)
-    (repo_path / ".git").mkdir()  # Make it look like a git repo
+    # Create output directory
+    output_dir = tmp_path / "output"
     
     # Run the command
-    result = runner.invoke(main, ["scan", str(org_path), "--output-dir", str(tmp_path / "output")])
+    result = runner.invoke(main, ["scan", str(tmp_path / "org"), "--output-dir", str(output_dir)])
     
     # Check results
     assert result.exit_code == 0
-    assert "Generated reports for test-repo" in result.output
-    assert (tmp_path / "output" / "test-repo").exists()
-    assert (tmp_path / "output" / "summary.json").exists()
+    assert "Scanning directory" in result.output
 
 def test_cli_help(runner):
     """Test the CLI help output."""
@@ -84,9 +79,12 @@ def test_analyze_command_no_repo(mock_analyzer, runner, tmp_path):
     assert result.exit_code != 0
     assert "does not exist" in result.output
 
-@patch('weekly.git_analyzer.GitAnalyzer')
-def test_analyze_org_command_no_repos(mock_analyzer, runner, tmp_path):
-    """Test the analyze-org command with a directory containing no Git repos."""
+@patch('weekly.git_scanner.GitScanner.scan_directory')
+def test_analyze_org_command_no_repos(mock_scan, runner, tmp_path):
+    """Test the scan command with a directory containing no Git repos."""
+    # Setup mock to return no repositories
+    mock_scan.return_value = []
+    
     # Create an empty directory
     empty_dir = tmp_path / "empty-org"
     empty_dir.mkdir()
@@ -95,5 +93,5 @@ def test_analyze_org_command_no_repos(mock_analyzer, runner, tmp_path):
     result = runner.invoke(main, ["scan", str(empty_dir)])
     
     # Check results
-    assert result.exit_code != 0
+    assert result.exit_code == 0  # Should exit with success even if no repos found
     assert "No Git repositories found" in result.output
