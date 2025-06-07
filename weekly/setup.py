@@ -1,4 +1,4 @@
-""
+"""
 Setup script for the repofacts package.
 
 This file is maintained for backward compatibility.

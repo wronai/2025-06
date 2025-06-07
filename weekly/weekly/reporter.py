@@ -2,6 +2,7 @@
 Report generation module for RepoFacts.
 """
 
+import json
 import markdown
 from datetime import datetime
 from pathlib import Path

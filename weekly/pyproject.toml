@@ -3,7 +3,7 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "repofacts"
+name = "weekly"
 version = "0.1.0"
 description = "Generate comprehensive reports from Git repositories"
 readme = "README.md"
@@ -37,8 +37,8 @@ dev = [
 ]
 
 [project.scripts]
-repofacts = "repofacts.cli:cli"
+weekly = "weekly.cli:cli"
 
 [project.urls]
-"Homepage" = "https://github.com/wronai/repofacts"
-"Bug Tracker" = "https://github.com/wronai/repofacts/issues"
+"Homepage" = "https://github.com/wronai/weekly"
+"Bug Tracker" = "https://github.com/wronai/weekly/issues"

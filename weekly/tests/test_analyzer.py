@@ -4,7 +4,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from repofacts.analyzer import GitAnalyzer, CommitStats, RepoStatus
+from weekly.analyzer import GitAnalyzer, CommitStats, RepoStatus
 
 def test_commit_stats_initialization():
     """Test CommitStats initialization and to_dict method."""

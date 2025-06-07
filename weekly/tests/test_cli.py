@@ -8,8 +8,8 @@ from unittest.mock import patch, MagicMock
 import pytest
 from click.testing import CliRunner
 
-from repofacts.cli import cli
-from repofacts.analyzer import RepoStatus
+from weekly.cli import cli
+from weekly.analyzer import RepoStatus
 
 @pytest.fixture
 def runner():

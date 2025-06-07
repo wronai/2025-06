@@ -5,8 +5,8 @@ from pathlib import Path
 from datetime import datetime
 from unittest.mock import patch, MagicMock
 
-from repofacts.analyzer import RepoStatus
-from repofacts.reporter import ReportGenerator
+from weekly.analyzer import RepoStatus
+from weekly.reporter import ReportGenerator
 
 @pytest.fixture
 def sample_status():
@@ -60,7 +60,7 @@ def test_generate_markdown(sample_status):
     # Check some dynamic content
     assert str(sample_status.total_commits) in markdown_content
     assert "user1: 30 commits" in markdown_content
-    assert "src/main.py: 15 changes" in markdown_content
+    assert "`src/main.py`: 15 changes" in markdown_content
     assert "- [ ] Add more tests" in markdown_content
 
 def test_generate_html(sample_status):
