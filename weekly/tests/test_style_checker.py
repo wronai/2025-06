@@ -42,8 +42,8 @@ def test_style_checker_with_valid_code(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is True
-    assert "No style issues found" in result.details["message"]
+    assert result.status == "success"
+    assert "No style issues found" in result.details
 
 
 def test_black_check_with_invalid_formatting(tmp_path, style_checker):
@@ -66,7 +66,7 @@ def test_black_check_with_invalid_formatting(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is False
+    assert result.status == "warning"
     assert any(issue.tool == "black" for issue in style_checker.issues)
 
 
@@ -97,7 +97,7 @@ def test_isort_check_with_misordered_imports(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is False
+    assert result.status == "warning"
     assert any(issue.tool == "isort" for issue in style_checker.issues)
 
 
@@ -121,7 +121,7 @@ def test_flake8_check_with_style_issues(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is False
+    assert result.status == "warning"
     assert any(issue.tool == "flake8" for issue in style_checker.issues)
 
 

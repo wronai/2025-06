@@ -166,25 +166,37 @@ class StyleChecker(BaseChecker):
     
     def _parse_flake8_output(self, output: str) -> None:
         """Parse flake8 output and extract issues."""
-        for line in output.splitlines():
-            parts = line.split(":")
-            if len(parts) >= 4:
-                file_path = parts[0]
-                line_num = int(parts[1])
-                col_num = int(parts[2])
-                code = parts[3].strip().split()[0]
-                message = "".join(parts[3:]).strip()
+        for line in output.strip().splitlines():
+            # Skip empty lines and summary lines
+            if not line.strip() or 'error:' in line or 'Found ' in line and 'error' in line:
+                continue
                 
-                self.issues.append(
-                    StyleIssue(
-                        file_path=file_path,
-                        line=line_num,
-                        column=col_num,
-                        code=code,
-                        message=message,
-                        tool="flake8"
-                    )
-                )
+            parts = line.split(":", 3)  # Split into max 4 parts
+            if len(parts) >= 4:
+                file_path = parts[0].strip()
+                try:
+                    line_num = int(parts[1].strip())
+                    col_num = int(parts[2].strip())
+                    # The rest is the message, which may contain colons
+                    message_parts = parts[3].strip().split(None, 1)
+                    if message_parts:
+                        code = message_parts[0]
+                        message = message_parts[1] if len(message_parts) > 1 else ""
+                        
+                        self.issues.append(
+                            StyleIssue(
+                                file_path=file_path,
+                                line=line_num,
+                                column=col_num,
+                                code=code,
+                                message=message,
+                                tool="flake8"
+                            )
+                        )
+                except (ValueError, IndexError) as e:
+                    # Skip malformed lines
+                    self.console.print(f"[yellow]Warning: Failed to parse flake8 output line: {line}[/]")
+                    continue
     
     def _run_mypy_check(self, path: Path) -> None:
         """Run mypy static type checker."""
@@ -233,16 +245,17 @@ class StyleChecker(BaseChecker):
                             )
                         )
     
-    def _generate_report(self) -> CheckResult:
+    def _generate_report(self) -> 'CheckResult':
         """Generate a report from the collected issues."""
+        from ..core.report import CheckResult
+        
         if not self.issues:
             return CheckResult(
-                name=self.name,
-                description=self.description,
-                severity=self.severity,
-                is_ok=True,
-                details={"message": "No style issues found. Code follows style guidelines."},
-                next_steps=[],
+                checker_name=self.name,
+                title="No Style Issues Found",
+                status="success",
+                details="No style issues found. Code follows style guidelines.",
+                suggestions=[]
             )
         
         # Group issues by tool
@@ -253,17 +266,19 @@ class StyleChecker(BaseChecker):
             issues_by_tool[issue.tool].append(issue)
         
         # Generate a detailed report
-        details = {
-            "total_issues": len(self.issues),
-            "issues_by_tool": {
-                tool: len(issues) 
-                for tool, issues in issues_by_tool.items()
-            },
-            "issues": [issue.to_dict() for issue in self.issues],
-        }
+        details = [
+            f"Found {len(self.issues)} total style issues across {len(issues_by_tool)} tools:"
+        ]
+        
+        for tool, issues in sorted(issues_by_tool.items()):
+            details.append(f"\n{tool.upper()}: {len(issues)} issues")
+            for issue in issues[:5]:  # Show first 5 issues per tool
+                details.append(f"  - {issue.file_path}:{issue.line}: {issue.message} ({issue.code})")
+            if len(issues) > 5:
+                details.append(f"  ... and {len(issues) - 5} more issues")
         
         # Generate next steps
-        next_steps = [
+        suggestions = [
             "Run 'black .' to automatically format your code",
             "Run 'isort .' to sort your imports",
             "Run 'flake8 .' to see detailed linting issues",
@@ -288,12 +303,15 @@ class StyleChecker(BaseChecker):
         self.console.print(Panel.fit(table))
         
         return CheckResult(
-            name=self.name,
-            description=self.description,
-            severity=self.severity,
-            is_ok=False,
-            details=details,
-            next_steps=next_steps,
+            checker_name=self.name,
+            title=f"Found {len(self.issues)} Style Issues",
+            status="warning" if self.issues else "success",
+            details="\n".join(details),
+            suggestions=suggestions,
+            metadata={
+                "total_issues": len(self.issues),
+                "issues_by_tool": {tool: len(issues) for tool, issues in issues_by_tool.items()}
+            }
         )
     
     def get_fix_commands(self) -> List[Tuple[str, str]]:
