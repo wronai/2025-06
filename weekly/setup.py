@@ -1,5 +1,5 @@
 """
-Setup script for the repofacts package.
+Setup script for the weekly package.
 
 This file is maintained for backward compatibility.
 The main package configuration is in pyproject.toml.

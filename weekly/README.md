@@ -1,10 +1,10 @@
-# RepoFacts
+# weekly
 
-[![PyPI](https://img.shields.io/pypi/v/repofacts)](https://pypi.org/project/repofacts/)
+[![PyPI](https://img.shields.io/pypi/v/weekly)](https://pypi.org/project/weekly/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Versions](https://img.shields.io/pypi/pyversions/repofacts.svg)](https://pypi.org/project/repofacts/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/weekly.svg)](https://pypi.org/project/weekly/)
 
-RepoFacts is a powerful command-line tool for generating comprehensive reports from Git repositories. It analyzes repository history, contributors, file changes, and more, then generates beautiful HTML, Markdown, and JSON reports.
+weekly is a powerful command-line tool for generating comprehensive reports from Git repositories. It analyzes repository history, contributors, file changes, and more, then generates beautiful HTML, Markdown, and JSON reports.
 
 ## Features
 
@@ -18,14 +18,14 @@ RepoFacts is a powerful command-line tool for generating comprehensive reports f
 ## Installation
 
 ```bash
-pip install repofacts
+pip install weekly
 ```
 
 For development:
 
 ```bash
-git clone https://github.com/wronai/repofacts.git
-cd repofacts
+git clone https://github.com/wronai/weekly.git
+cd weekly
 pip install -e .[dev]
 ```
 
@@ -34,13 +34,13 @@ pip install -e .[dev]
 ### Analyze a single repository
 
 ```bash
-repofacts analyze /path/to/repo
+weekly analyze /path/to/repo
 ```
 
 ### Analyze all repositories in a directory
 
 ```bash
-repofacts analyze-org /path/to/organization/dir
+weekly analyze-org /path/to/organization/dir
 ```
 
 ### Options
@@ -53,7 +53,7 @@ Options:
 
 ## Output Structure
 
-For each repository, RepoFacts generates the following files:
+For each repository, weekly generates the following files:
 
 ```
 reports/
@@ -123,8 +123,8 @@ reports/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/wronai/repofacts.git
-   cd repofacts
+   git clone https://github.com/wronai/weekly.git
+   cd weekly
    ```
 
 2. Create and activate a virtual environment:

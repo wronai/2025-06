@@ -1,5 +1,5 @@
 """
-Report generation module for RepoFacts.
+Report generation module for weekly.
 """
 
 import json
@@ -51,7 +51,7 @@ class ReportGenerator:
         return f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>{status.name} - RepoFacts Report</title>
+    <title>{status.name} - weekly Report</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -129,7 +129,7 @@ class ReportGenerator:
     </div>
     
     <div class="footer">
-        Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} by RepoFacts
+        Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} by weekly
     </div>
 </body>
 </html>"""

@@ -3,7 +3,7 @@
 # Variables
 PYTHON = python3
 PIP = pip
-PACKAGE = repofacts
+PACKAGE = weekly
 
 # Install the package in development mode
 install:
@@ -37,8 +37,10 @@ build:
 	$(PYTHON) -m build
 
 # Publish to PyPI (requires twine)
-publish: clean build
-	twine upload dist/*
+publish: clean
+	poetry version patch
+	poetry build
+	poetry publish
 
 # Run all checks (lint, typecheck, test)
 check: lint typecheck test

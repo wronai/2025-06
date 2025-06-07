@@ -1,5 +1,5 @@
 """
-Repository analyzer module for RepoFacts.
+Repository analyzer module for weekly.
 """
 
 import os

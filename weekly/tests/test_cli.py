@@ -16,7 +16,7 @@ def runner():
     """Fixture for invoking command-line interfaces."""
     return CliRunner()
 
-@patch('repofacts.cli.GitAnalyzer')
+@patch('weekly.cli.GitAnalyzer')
 def test_analyze_command(mock_analyzer, runner, tmp_path):
     """Test the analyze command."""
     # Setup mock
@@ -38,7 +38,7 @@ def test_analyze_command(mock_analyzer, runner, tmp_path):
     assert "Generated reports for test-repo" in result.output
     assert (tmp_path / "output" / "test-repo").exists()
 
-@patch('repofacts.cli.GitAnalyzer')
+@patch('weekly.cli.GitAnalyzer')
 def test_analyze_org_command(mock_analyzer, runner, tmp_path):
     """Test the analyze-org command."""
     # Setup mock
@@ -70,7 +70,7 @@ def test_cli_help(runner):
     assert "analyze" in result.output
     assert "analyze-org" in result.output
 
-@patch('repofacts.cli.GitAnalyzer')
+@patch('weekly.cli.GitAnalyzer')
 def test_analyze_command_no_repo(mock_analyzer, runner, tmp_path):
     """Test the analyze command with a non-existent repository."""
     # Setup mock to return None (no repo found)
@@ -84,7 +84,7 @@ def test_analyze_command_no_repo(mock_analyzer, runner, tmp_path):
     assert result.exit_code != 0
     assert "does not exist" in result.output
 
-@patch('repofacts.cli.GitAnalyzer')
+@patch('weekly.cli.GitAnalyzer')
 def test_analyze_org_command_no_repos(mock_analyzer, runner, tmp_path):
     """Test the analyze-org command with a directory containing no Git repos."""
     # Create an empty directory

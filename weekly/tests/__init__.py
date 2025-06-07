@@ -1,1 +1,1 @@
-"""Test package for repofacts."""
+"""Test package for weekly."""

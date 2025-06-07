@@ -1,14 +1,14 @@
-# Contributing to RepoFacts
+# Contributing to weekly
 
-Thank you for your interest in contributing to RepoFacts! We welcome contributions from the community to help improve this project.
+Thank you for your interest in contributing to weekly! We welcome contributions from the community to help improve this project.
 
 ## Getting Started
 
 1. **Fork** the repository on GitHub
 2. **Clone** your fork locally
    ```bash
-   git clone https://github.com/your-username/repofacts.git
-   cd repofacts
+   git clone https://github.com/your-username/weekly.git
+   cd weekly
    ```
 3. **Set up** a development environment
    ```bash
@@ -53,7 +53,7 @@ pytest
 Run with coverage:
 
 ```bash
-pytest --cov=repofacts --cov-report=term-missing
+pytest --cov=weekly --cov-report=term-missing
 ```
 
 ## Pull Request Guidelines
