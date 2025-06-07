@@ -21,6 +21,7 @@ from .core.project import Project
 from .core.report import Report, CheckResult
 from .core.analyzer import analyze_project
 from .core.repo_status import RepoStatus
+from .git_analyzer import GitAnalyzer, CommitStats
 
 # Import Git scanner and report generator
 from .git_scanner import GitRepo, GitScanner, ScanResult
@@ -35,6 +36,8 @@ __all__ = [
     'Project',
     'Report',
     'RepoStatus',
+    'GitAnalyzer',
+    'CommitStats',
     'main',  # Export main as cli
     'CheckResult',
     
