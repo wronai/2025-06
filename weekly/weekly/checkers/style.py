@@ -217,33 +217,41 @@ class StyleChecker(BaseChecker):
     
     def _parse_mypy_output(self, output: str) -> None:
         """Parse mypy output and extract issues."""
-        current_file = None
-        
         for line in output.splitlines():
             line = line.strip()
-            if not line:
+            if not line or line.startswith("Found ") or line == "Success: no issues found in 1 source file":
                 continue
                 
-            if line.endswith(".py"):
-                current_file = line.split(":")[0]
-            elif current_file and ":" in line and "error:" in line:
-                # Format: filename.py:123: error: Message
-                parts = line.split(":", 2)
-                if len(parts) >= 3:
-                    line_num = int(parts[1].strip())
-                    message_parts = parts[2].split("error:", 1)
-                    if len(message_parts) > 1:
-                        message = message_parts[1].strip()
+            # Format: filename.py:line:col: error: Message
+            if ": error:" in line or ": note:" in line:
+                parts = line.split(":", 3)
+                if len(parts) >= 4:
+                    file_path = parts[0].strip()
+                    try:
+                        line_num = int(parts[1].strip())
+                        # Column might be present but we'll default to 0 if not
+                        try:
+                            col_num = int(parts[2].strip())
+                            message = parts[3].split(":", 1)[1].strip()
+                        except (IndexError, ValueError):
+                            col_num = 0
+                            message = parts[2].split(":", 1)[1].strip()
+                            
+                        error_type = "error" if ": error:" in line else "note"
+                        
                         self.issues.append(
                             StyleIssue(
-                                file_path=current_file,
+                                file_path=file_path,
                                 line=line_num,
-                                column=0,
-                                code="TYP100",
+                                column=col_num,
+                                code=f"TYP100" if error_type == "error" else "TYP101",
                                 message=message,
                                 tool="mypy"
                             )
                         )
+                    except (ValueError, IndexError) as e:
+                        # Skip lines that don't match the expected format
+                        continue
     
     def _generate_report(self) -> 'CheckResult':
         """Generate a report from the collected issues."""
@@ -255,7 +263,8 @@ class StyleChecker(BaseChecker):
                 title="No Style Issues Found",
                 status="success",
                 details="No style issues found. Code follows style guidelines.",
-                suggestions=[]
+                suggestions=[],
+                metadata={"total_issues": 0, "issues_by_tool": {}}
             )
         
         # Group issues by tool

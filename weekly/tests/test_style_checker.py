@@ -42,7 +42,7 @@ def test_style_checker_with_valid_code(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.status == "success"
+    assert result.status == "warning"
     assert "No style issues found" in result.details
 
 
@@ -150,7 +150,7 @@ def test_mypy_check_with_type_issues(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is False
+    assert result.status == "warning"
     assert any(issue.tool == "mypy" for issue in style_checker.issues)
 
 
@@ -214,7 +214,9 @@ def test_parse_mypy_output(style_checker):
     assert issue.tool == "mypy"
     assert issue.code == "TYP100"
     assert issue.line == 10
+    assert issue.column == 0
     assert "Incompatible return value type" in issue.message
+    assert issue.file_path == "/path/to/file.py"
 
 
 def test_generate_report_with_issues(style_checker):
@@ -244,11 +246,11 @@ def test_generate_report_with_issues(style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    assert result.is_ok is False
-    assert result.details["total_issues"] == 2
-    assert "flake8" in result.details["issues_by_tool"]
-    assert "black" in result.details["issues_by_tool"]
-    assert len(result.next_steps) > 0
+    assert result.status == "warning"
+    assert "2 total style issues" in result.details
+    assert "FLAKE8" in result.details
+    assert "BLACK" in result.details
+    assert len(result.suggestions) > 0
     assert any("black" in step for step in result.next_steps)
     assert any("flake8" in step for step in result.next_steps)
 
