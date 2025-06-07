@@ -19,16 +19,21 @@ from .checkers.style import StyleChecker
 # Import core components
 from .core.project import Project
 from .core.report import Report, CheckResult
+from .core.analyzer import analyze_project
 
 # Import Git scanner and report generator
 from .git_scanner import GitRepo, GitScanner, ScanResult
 from .git_report import GitReportGenerator, RepoInfo, CheckResult as GitCheckResult
+
+# Import and expose CLI
+from .cli import main
 
 __all__ = [
     # Core functionality
     'analyze_project',
     'Project',
     'Report',
+    'main'  # Export main as cli
     'CheckResult',
     
     # Checkers
@@ -49,36 +54,4 @@ __all__ = [
     'GitCheckResult',
 ]
 
-def analyze_project(project_path: Path) -> Report:
-    """
-    Analyze a project and generate a report with suggested next steps.
-    
-    Args:
-        project_path: Path to the project directory
-        
-    Returns:
-        Report: A report containing analysis results and suggestions
-    """
-    project = Project(project_path)
-    report = Report(project)
-    
-    # Register all available checkers
-    checkers = [
-        TestChecker(),
-        DocumentationChecker(),
-        CIChecker(),
-        DependenciesChecker(),
-        CodeQualityChecker(),
-    ]
-    
-    # Run all checkers
-    for checker in checkers:
-        try:
-            result = checker.check(project)
-            if result:
-                report.add_result(result)
-        except Exception as e:
-            # Log the error but continue with other checkers
-            print(f"Error running {checker.__class__.__name__}: {str(e)}")
-    
-    return report
+

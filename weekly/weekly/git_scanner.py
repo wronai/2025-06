@@ -19,8 +19,8 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.tree import Tree
 
-from weekly.checkers.base import CheckResult
-from weekly.git_report import GitReportGenerator, RepoInfo, CheckResult as GitCheckResult
+# Import only the specific CheckResult we need for reports
+from weekly.git_report import GitReportGenerator, RepoInfo, CheckResult as ReportCheckResult
 
 
 @dataclass
@@ -333,12 +333,20 @@ class GitScanner:
             Path to the generated report
         """
         # Create output directory
-        output_dir = self.output_dir / repo.org / repo.name
+        output_dir = self.output_dir / (repo.org or '') / repo.name
+        self.console.print(f"[debug] Creating output directory: {output_dir}")
         output_dir.mkdir(parents=True, exist_ok=True)
         
+        # Verify directory was created and is writable
+        if not output_dir.exists() or not os.access(output_dir, os.W_OK):
+            raise OSError(f"Cannot write to output directory: {output_dir}")
+            
         # Generate report filename with timestamp
-        report_filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        report_filename = f"{timestamp}.html"
         report_path = output_dir / report_filename
+        
+        self.console.print(f"[debug] Report will be saved to: {report_path}")
         
         # Prepare repository info
         has_errors = result.error is not None
@@ -361,7 +369,8 @@ class GitScanner:
         # Convert check results to the format expected by GitReportGenerator
         check_results = {}
         for name, check_result in result.results.items():
-            check_results[name] = CheckResult(
+            # Create a CheckResult with the correct interface for the report generator
+            check_results[name] = ReportCheckResult(
                 name=name,
                 description=getattr(check_result, 'description', ''),
                 is_ok=getattr(check_result, 'is_ok', False),
@@ -371,28 +380,35 @@ class GitScanner:
                 severity="high" if not getattr(check_result, 'is_ok', True) else "low"
             )
         
-        try:
-            # Generate the report
-            GitReportGenerator.generate_html_report(
-                results=check_results,
-                repo_info=repo_info,
-                output_path=report_path,
-                title=f"Weekly Report - {repo.org}/{repo.name}"
-            )
-        except Exception as e:
-            print(f"[ERROR] Error generating report for {repo.name}: {e}")
-            import traceback
-            traceback.print_exc()
+        # Generate the report
+        GitReportGenerator.generate_html_report(
+            results=check_results,
+            repo_info=repo_info,
+            output_path=report_path,
+            title=f"Weekly Report - {repo.org}/{repo.name}"
+        )
         
         # Create a symlink to the latest report
         latest_link = output_dir / "latest.html"
-        if latest_link.exists():
-            latest_link.unlink()
+        
+        # Remove existing symlink if it exists
+        if latest_link.exists() or latest_link.is_symlink():
+            try:
+                latest_link.unlink()
+                self.console.print(f"[yellow]Removed existing symlink: {latest_link}")
+            except OSError as e:
+                self.console.print(f"[yellow]Warning: Could not remove existing latest.html: {e}")
+        
+        # Create new symlink
         try:
-            latest_link.symlink_to(report_path.name)
-        except (FileExistsError, OSError):
-            # Symlink might exist if running in parallel
-            pass
+            # Use absolute path for the target to avoid any relative path issues
+            target_path = report_path.absolute()
+            latest_link.symlink_to(target_path)
+            self.console.print(f"[green]Created symlink: {latest_link} -> {target_path}")
+        except OSError as e:
+            self.console.print(f"[yellow]Warning: Could not create latest.html symlink: {e}")
+            import traceback
+            traceback.print_exc()
             
         return report_path
     

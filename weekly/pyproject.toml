@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "weekly"
-version = "0.1.26"
+version = "0.1.30"
 description = "A comprehensive Python project quality analyzer that provides actionable next steps for improving your project"
 authors = ["Tom Sapletta <info@softreck.dev>"]
 license = "Apache-2.0"

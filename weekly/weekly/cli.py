@@ -11,7 +11,8 @@ import click
 
 from rich.console import Console
 
-from . import __version__, analyze_project
+from . import __version__
+from .core.analyzer import analyze_project
 from .core.project import Project
 from .core.report import Report
 from .git_scanner import GitScanner
