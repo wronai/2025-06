@@ -366,7 +366,8 @@ class GitScanner:
             since_date=self.since.strftime("%Y-%m-%d") if self.since else None
         )
         
-        return summary_path
+        summary_data = []
+        for result in results:
             repo = result.repo
             summary_data.append({
                 "name": f"{repo.org}/{repo.name}" if repo.org else repo.name,
@@ -376,6 +377,8 @@ class GitScanner:
                 "has_errors": any(not r.is_ok for r in result.results.values()),
                 "report_path": f"{repo.org}/{repo.name}/latest.html" if repo.org else f"{repo.name}/latest.html"
             })
+            
+        return summary_path
         
         # Generate the summary report
         self.report_generator.generate_summary(

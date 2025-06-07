@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "weekly"
-version = "0.1.12"
+version = "0.1.16"
 description = "A comprehensive Python project quality analyzer that provides actionable next steps for improving your project"
 authors = ["WronAI <info@softreck.dev>"]
 license = "Apache-2.0"
@@ -37,7 +37,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8.1,<4.0"
 click = "^8.1.3"
 tomli = { version = "^2.0.1", python = "<3.11" }
 toml = "^0.10.2"  # For parsing TOML files
@@ -110,7 +110,7 @@ disallow_untyped_calls = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=weekly --cov-report=term-missing --cov-report=xml -n auto"
+addopts = "-v --cov=weekly --cov-report=term-missing --cov-report=xml"
 pythonpath = ["."]
 
 [coverage.run]

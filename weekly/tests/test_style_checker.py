@@ -49,8 +49,7 @@ def test_style_checker_with_valid_code(tmp_path, style_checker):
 def test_black_check_with_invalid_formatting(tmp_path, style_checker):
     """Test Black formatter check with poorly formatted code."""
     # Create a poorly formatted Python file
-    code = "def hello():
-    print(  'Hello, World!'  )"
+    code = 'def hello():\n    print(  "Hello, World!"  )'
     test_file = tmp_path / "poorly_formatted.py"
     test_file.write_text(code)
     

@@ -2,11 +2,21 @@
 Base checker class for Weekly project analysis.
 """
 from abc import ABC, abstractmethod
+from enum import Enum
 from pathlib import Path
 from typing import Dict, Any, Optional
 
 from ..core.project import Project
 from ..core.report import CheckResult
+
+
+class CheckSeverity(str, Enum):
+    """Enumeration of possible check severity levels."""
+    INFO = "info"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
 
 class BaseChecker(ABC):

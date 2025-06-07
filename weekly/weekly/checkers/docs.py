@@ -6,10 +6,9 @@ from typing import Optional, List, Dict, Any
 
 from ..core.project import Project
 from ..core.report import CheckResult
-from .base import BaseChecker
 
 
-class DocumentationChecker(BaseChecker):
+class DocumentationChecker:
     """Checker for project documentation."""
     
     @property
@@ -215,7 +214,7 @@ class DocumentationChecker(BaseChecker):
         # Check for pdoc/autodoc in source files
         for py_file in project.path.glob('**/*.py'):
             content = project.get_file_content(str(py_file.relative_to(project.path)))
-            if content and (""""""" in content or """'''""" in content):
+            if content and ("""""" in content or "'''" in content):
                 return {'exists': True}
                 
         # Check for doc/ directory with html files
