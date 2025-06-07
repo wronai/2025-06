@@ -1,0 +1,37 @@
+Weekly - Project Quality Analyzer
+Copyright 2023-2025 WronAI
+
+This product includes software developed by the following third parties:
+
+- Click (https://github.com/pallets/click/)
+  Copyright 2014 Pallets
+  License: BSD-3-Clause
+
+- PyYAML (https://github.com/yaml/pyyaml/)
+  Copyright 2017-2021 Ingy döt Net
+  Copyright 2006-2016 Kirill Simonov
+  License: MIT
+
+- Tomli (https://github.com/hukkin/tomli/)
+  Copyright 2021-2022 The Tomli Developers
+  License: MIT
+
+- Pytest (https://github.com/pytest-dev/pytest/)
+  Copyright 2015-2022 Holger Krekel and others
+  License: MIT
+
+- Black (https://github.com/psf/black/)
+  Copyright 2018-2022 The Black Authors
+  License: MIT
+
+- isort (https://github.com/PyCQA/isort/)
+  Copyright 2013 Timothy Edmund Crosley
+  License: MIT
+
+- mypy (https://github.com/python/mypy/)
+  Copyright 2012-2022 Jukka Lehtosalo and contributors
+  License: MIT
+
+- flake8 (https://github.com/PyCQA/flake8/)
+  Copyright 2011-2019 Tarek Ziade and contributors
+  License: MIT

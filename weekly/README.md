@@ -1,93 +1,180 @@
-# weekly
+# Weekly - Project Quality Analyzer
 
 [![PyPI](https://img.shields.io/pypi/v/weekly)](https://pypi.org/project/weekly/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/weekly)](https://pypi.org/project/weekly/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/pypi/pyversions/weekly.svg)](https://pypi.org/project/weekly/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![codecov](https://codecov.io/gh/wronai/weekly/branch/main/graph/badge.svg?token=YOUR-TOKEN-HERE)](https://codecov.io/gh/wronai/weekly)
+[![Build Status](https://github.com/wronai/weekly/actions/workflows/tests.yml/badge.svg)](https://github.com/wronai/weekly/actions)
+[![Documentation Status](https://readthedocs.org/projects/weekly/badge/?version=latest)](https://weekly.readthedocs.io/en/latest/?badge=latest)
 
-weekly is a powerful command-line tool for generating comprehensive reports from Git repositories. It analyzes repository history, contributors, file changes, and more, then generates beautiful HTML, Markdown, and JSON reports.
+Weekly is a comprehensive Python project quality analyzer that helps developers maintain high code quality by automatically detecting issues and suggesting improvements. It analyzes various aspects of your Python projects and generates actionable reports.
 
 ## Features
 
-- 📊 **Complete Repository Analysis**: Get insights into commits, contributors, and file changes
-- 📝 **Multiple Output Formats**: Generate reports in HTML, Markdown, and JSON
-- 🔍 **Deep Git History**: Analyze complete commit history with detailed statistics
-- 🎨 **Beautiful Reports**: Clean, responsive HTML reports with download options
-- 🚀 **CLI Interface**: Easy-to-use command line interface
-- 📦 **Python Package**: Integrate with your own Python projects
+- 🧪 **Test Coverage Analysis**: Check test coverage and test configuration
+- 📚 **Documentation Check**: Verify README, LICENSE, CHANGELOG, and API docs
+- 🔄 **CI/CD Integration**: Detect CI/CD configuration and best practices
+- 📦 **Dependency Analysis**: Identify outdated or vulnerable dependencies
+- 🛠️ **Code Quality**: Check for code style, formatting, and common issues
+- 📊 **Interactive Reports**: Generate detailed reports in multiple formats (JSON, Markdown, Text)
+- 🔍 **Extensible Architecture**: Easy to add custom checkers and rules
+- 🚀 **Fast and Lightweight**: Minimal dependencies, fast analysis
+- 🔄 **Git Integration**: Works seamlessly with Git repositories
 
 ## Installation
+
+### Using pip
 
 ```bash
 pip install weekly
 ```
 
-For development:
+### Using Poetry (recommended)
 
 ```bash
+poetry add weekly
+```
+
+### For Development
+
+```bash
+# Clone the repository
 git clone https://github.com/wronai/weekly.git
 cd weekly
-pip install -e .[dev]
+
+# Install with Poetry
+poetry install
+
+# Activate the virtual environment
+poetry shell
 ```
 
 ## Usage
 
-### Analyze a single repository
+### Basic Usage
+
+Analyze a Python project:
 
 ```bash
-weekly analyze /path/to/repo
+weekly analyze /path/to/your/project
 ```
 
-### Analyze all repositories in a directory
-
-```bash
-weekly analyze-org /path/to/organization/dir
-```
-
-### Options
+### Command Line Options
 
 ```
+Usage: weekly analyze [OPTIONS] PROJECT_PATH
+
+  Analyze a Python project and provide quality insights.
+
+  PROJECT_PATH: Path to the project directory (default: current directory)
+
 Options:
-  -o, --output PATH  Output directory for reports (default: ./reports)
-  --help             Show this message and exit.
+  -f, --format [text|json|markdown]  Output format (default: text)
+  -o, --output FILE                  Output file (default: stdout)
+  --show-suggestions / --no-suggestions
+                                      Show improvement suggestions (default: true)
+  -v, --verbose                      Show detailed output
+  --help                             Show this message and exit.
 ```
 
-## Output Structure
+### Examples
 
-For each repository, weekly generates the following files:
+1. Analyze current directory and show results in the terminal:
+   ```bash
+   weekly analyze .
+   ```
+
+2. Generate a Markdown report:
+   ```bash
+   weekly analyze -f markdown -o report.md /path/to/project
+   ```
+
+3. Generate a JSON report for programmatic use:
+   ```bash
+   weekly analyze -f json -o report.json /path/to/project
+   ```
+
+## Output Example
+
+### Text Output
 
 ```
-reports/
-└── repository-name/
-    ├── status.json    # Complete repository data including full commit history
-    ├── status.md       # Markdown report
-    └── index.html      # HTML report with download option
+📊 Weekly Project Analysis Report
+================================================================================
+Project: example-project
+Generated: 2025-06-07 12:34:56
+
+Summary:
+--------------------------------------------------------------------------------
+✅ 5 passed
+⚠️  3 warnings
+❌ 1 errors
+
+Detailed Results:
+--------------------------------------------------------------------------------
+✅ Project Structure
+  Found Python project with proper structure
+
+✅ Dependencies
+  All dependencies are properly specified
+  
+⚠️  Test Coverage
+  Test coverage is below 80% (currently 65%)
+  
+  Suggestions:
+    • Add more test cases to improve coverage
+    • Consider using pytest-cov for coverage reporting
+
+❌ Documentation
+  Missing API documentation
+  
+  Suggestions:
+    • Add docstrings to all public functions and classes
+    • Consider using Sphinx or MkDocs for API documentation
+
+Recommended Actions:
+--------------------------------------------------------------------------------
+1. Improve Test Coverage
+   • Add unit tests for untested modules
+   • Add integration tests for critical paths
+   • Set up code coverage reporting in CI
+
+2. Enhance Documentation
+   • Add docstrings to all public APIs
+   • Create API documentation using Sphinx or MkDocs
+   • Add examples to the README
 ```
 
-## Example Reports
+### Programmatic Usage
 
-### HTML Report
+```python
+from pathlib import Path
+from weekly import analyze_project
+from weekly.core.report import Report
 
-![HTML Report](https://example.com/path/to/screenshot.png)  <!-- TODO: Add screenshot -->
+# Analyze a project
+report = analyze_project(Path("/path/to/your/project"))
 
-### Markdown Report
+# Get report as dictionary
+report_data = report.to_dict()
 
-```markdown
-# repository-name
+# Get markdown report
+markdown = report.to_markdown()
 
-**Repository description**
+# Print summary
+print(f"✅ {report.summary['success']} passed")
+print(f"⚠️  {report.summary['warnings']} warnings")
+print(f"❌ {report.summary['errors']} errors")
 
-## 📊 Project Overview
-
-- **Created:** 2023-01-01
-- **Last Updated:** 2023-05-15
-- **Total Commits:** 42
-- **Contributors:** 3
-
-### Top Contributors
-
-- Alice: 25 commits
-- Bob: 15 commits
-- Charlie: 2 commits
+# Get suggestions
+for suggestion in report.get_suggestions():
+    print(f"\n{suggestion['title']}:")
+    for item in suggestion['suggestions']:
+        print(f"  • {item}")
 
 ### Most Active Files
 

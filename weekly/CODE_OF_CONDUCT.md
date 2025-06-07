@@ -34,7 +34,17 @@ This Code of Conduct applies within all project spaces and also applies when an 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at [INSERT EMAIL ADDRESS]. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainers at info@softreck.dev. All complaints will be reviewed and investigated promptly and fairly. All reports will be handled with discretion.
+
+When reporting, please include:
+- Your contact information
+- Names (usernames, real names, or pseudonyms) of those involved
+- Your account of what occurred
+- Any additional context or evidence
+
+All reports will be kept confidential. In some cases, we may determine that a public statement is necessary, but the identity of the reporter will remain confidential unless the reporter gives us permission to disclose it.
+
+The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
 
