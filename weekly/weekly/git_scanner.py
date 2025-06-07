@@ -124,9 +124,24 @@ class ScanResult:
             error: Error message if the scan failed
         """
         print(f"[DEBUG] Initializing ScanResult with repo={repo}, results={results}, error={error}")
-        self.repo = repo
-        self.results = results or {}
-        self.error = error
+        print(f"[DEBUG] Type of repo: {type(repo).__name__}")
+        print(f"[DEBUG] Type of results: {type(results).__name__ if results is not None else 'None'}")
+        print(f"[DEBUG] Type of error: {type(error).__name__ if error is not None else 'None'}")
+        
+        try:
+            print("[DEBUG] Setting repo attribute...")
+            self.repo = repo
+            print("[DEBUG] Setting results attribute...")
+            self.results = results or {}
+            print("[DEBUG] Setting error attribute...")
+            self.error = error
+            print("[DEBUG] ScanResult initialization complete")
+        except Exception as e:
+            print(f"[ERROR] Error in ScanResult.__init__: {e}")
+            print(f"[ERROR] Exception type: {type(e).__name__}")
+            import traceback
+            traceback.print_exc()
+            raise
     
     def to_dict(self) -> Dict:
         """Convert the result to a dictionary."""
@@ -285,9 +300,20 @@ class GitScanner:
                     repo = futures[future]
                     try:
                         result = future.result()
-                        results.append(result)
+                        try:
+                            # Try to access attributes that might cause the error
+                            _ = result.repo
+                            _ = result.results
+                            _ = result.error
+                            results.append(result)
+                        except Exception as e:
+                            self.console.print(f"[red]Error processing result for {repo.path}: {e}")
+                            import traceback
+                            traceback.print_exc()
                     except Exception as e:
                         self.console.print(f"[red]Error scanning {repo.path}: {e}")
+                        import traceback
+                        traceback.print_exc()
                     
                     progress.update(task, advance=1, description=f"Scanned {repo.name}")
         
@@ -315,6 +341,13 @@ class GitScanner:
         report_path = output_dir / report_filename
         
         # Prepare repository info
+        has_errors = result.error is not None
+        if not has_errors:
+            for check_result in result.results.values():
+                if hasattr(check_result, 'is_ok') and not check_result.is_ok:
+                    has_errors = True
+                    break
+        
         repo_info = RepoInfo(
             name=repo.name,
             org=repo.org,
@@ -322,29 +355,34 @@ class GitScanner:
             branch=repo.branch,
             remote_url=repo.remote_url,
             last_commit_date=repo.last_commit_date.isoformat() if repo.last_commit_date else None,
-            has_errors=result.error is not None or any(not r.is_ok for r in result.results.values())
+            has_errors=has_errors
         )
         
-        # Convert check results to GitCheckResult format
+        # Convert check results to the format expected by GitReportGenerator
         check_results = {}
         for name, check_result in result.results.items():
-            check_results[name] = GitCheckResult(
+            check_results[name] = CheckResult(
                 name=name,
-                description=check_result.description,
-                is_ok=check_result.is_ok,
-                message=check_result.message,
-                details=check_result.details,
-                next_steps=check_result.next_steps or [],
-                severity="high" if not check_result.is_ok else "low"
+                description=getattr(check_result, 'description', ''),
+                is_ok=getattr(check_result, 'is_ok', False),
+                message=getattr(check_result, 'message', ''),
+                details=getattr(check_result, 'details', None),
+                next_steps=getattr(check_result, 'next_steps', []),
+                severity="high" if not getattr(check_result, 'is_ok', True) else "low"
             )
         
-        # Generate the report
-        GitReportGenerator.generate_html_report(
-            results=check_results,
-            repo_info=repo_info,
-            output_path=report_path,
-            title=f"Weekly Report - {repo.org}/{repo.name}"
-        )
+        try:
+            # Generate the report
+            GitReportGenerator.generate_html_report(
+                results=check_results,
+                repo_info=repo_info,
+                output_path=report_path,
+                title=f"Weekly Report - {repo.org}/{repo.name}"
+            )
+        except Exception as e:
+            print(f"[ERROR] Error generating report for {repo.name}: {e}")
+            import traceback
+            traceback.print_exc()
         
         # Create a symlink to the latest report
         latest_link = output_dir / "latest.html"

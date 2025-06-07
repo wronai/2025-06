@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "weekly"
-version = "0.1.21"
+version = "0.1.26"
 description = "A comprehensive Python project quality analyzer that provides actionable next steps for improving your project"
-authors = ["WronAI <info@softreck.dev>"]
+authors = ["Tom Sapletta <info@softreck.dev>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/wronai/weekly"

@@ -9,31 +9,45 @@ from pathlib import Path
 from .project import Project
 
 
-@dataclass
 class CheckResult:
     """Represents the result of a single check."""
     
-    checker_name: str
-    """Name of the checker that produced this result."""
-    
-    title: str
-    """Short title describing the check."""
-    
-    status: str
-    """Status of the check (e.g., 'success', 'warning', 'error')."""
-    
-    details: str
-    """Detailed description of the check results."""
-    
-    suggestions: List[str] = field(default_factory=list)
-    """List of suggested actions to improve the project."""
-    
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    """Additional metadata about the check result."""
+    def __init__(
+        self,
+        checker_name: str,
+        title: str,
+        status: str,
+        details: str,
+        suggestions: Optional[List[str]] = None,
+        metadata: Optional[Dict[str, Any]] = None
+    ):
+        """Initialize a check result.
+        
+        Args:
+            checker_name: Name of the checker that produced this result
+            title: Short title describing the check
+            status: Status of the check (e.g., 'success', 'warning', 'error')
+            details: Detailed description of the check results
+            suggestions: List of suggested actions to improve the project
+            metadata: Additional metadata about the check result
+        """
+        self.checker_name = checker_name
+        self.title = title
+        self.status = status
+        self.details = details
+        self.suggestions = suggestions or []
+        self.metadata = metadata or {}
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert the check result to a dictionary."""
-        return asdict(self)
+        return {
+            'checker_name': self.checker_name,
+            'title': self.title,
+            'status': self.status,
+            'details': self.details,
+            'suggestions': self.suggestions,
+            'metadata': self.metadata
+        }
 
 
 class Report:
