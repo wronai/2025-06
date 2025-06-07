@@ -37,8 +37,37 @@ class GitRepo:
     
     def __post_init__(self):
         """Initialize repository metadata."""
+        print(f"[DEBUG] GitRepo.__post_init__ called with: {self}")
+        print(f"[DEBUG] self.path: {getattr(self, 'path', 'NOT SET')}")
+        print(f"[DEBUG] self.name: {getattr(self, 'name', 'NOT SET')}")
+        
+        if not hasattr(self, 'path') or not self.path:
+            raise ValueError("path is required")
+            
+        if not hasattr(self, 'name') or not self.name:
+            raise ValueError("name is required")
+            
         self.path = Path(self.path).resolve()
+        
+        # Set default values for optional fields
+        if not hasattr(self, 'org') or self.org is None:
+            self.org = ""
+            
+        if not hasattr(self, 'last_commit_date') or self.last_commit_date is None:
+            self.last_commit_date = None
+            
+        if not hasattr(self, 'has_changes') or self.has_changes is None:
+            self.has_changes = False
+            
+        if not hasattr(self, 'branch') or not self.branch:
+            self.branch = "main"
+            
+        if not hasattr(self, 'remote_url') or self.remote_url is None:
+            self.remote_url = ""
+            
+        print(f"[DEBUG] Before _extract_metadata: {self.__dict__}")
         self._extract_metadata()
+        print(f"[DEBUG] After _extract_metadata: {self.__dict__}")
     
     def _extract_metadata(self) -> None:
         """Extract metadata from the Git repository."""
@@ -83,13 +112,21 @@ class GitRepo:
             return subprocess.CompletedProcess(args=command, returncode=1)
 
 
-@dataclass
 class ScanResult:
     """Represents the result of scanning a repository."""
     
-    repo: GitRepo
-    results: Dict[str, CheckResult] = field(default_factory=dict)
-    error: Optional[str] = None
+    def __init__(self, repo: 'GitRepo', results: Optional[Dict[str, Any]] = None, error: Optional[str] = None):
+        """Initialize a scan result.
+        
+        Args:
+            repo: The Git repository that was scanned
+            results: Dictionary of check results
+            error: Error message if the scan failed
+        """
+        print(f"[DEBUG] Initializing ScanResult with repo={repo}, results={results}, error={error}")
+        self.repo = repo
+        self.results = results or {}
+        self.error = error
     
     def to_dict(self) -> Dict:
         """Convert the result to a dictionary."""
