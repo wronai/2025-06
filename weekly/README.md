@@ -1,31 +1,130 @@
 # Weekly - Project Quality Analyzer
 
-[![PyPI](https://img.shields.io/pypi/v/weekly)](https://pypi.org/project/weekly/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/weekly)](https://pypi.org/project/weekly/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python Versions](https://img.shields.io/pypi/pyversions/weekly.svg)](https://pypi.org/project/weekly/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
-[![codecov](https://codecov.io/gh/wronai/weekly/branch/main/graph/badge.svg?token=YOUR-TOKEN-HERE)](https://codecov.io/gh/wronai/weekly)
-[![Build Status](https://github.com/wronai/weekly/actions/workflows/tests.yml/badge.svg)](https://github.com/wronai/weekly/actions)
-[![Documentation Status](https://readthedocs.org/projects/weekly/badge/?version=latest)](https://weekly.readthedocs.io/en/latest/?badge=latest)
+[![PyPI](https://img.shields.io/pypi/v/weekly?logo=pypi&logoColor=white&style=for-the-badge)](https://pypi.org/project/weekly/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/weekly?logo=pypi&logoColor=white&style=for-the-badge)](https://pypi.org/project/weekly/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/weekly?logo=python&logoColor=white&style=for-the-badge)](https://pypi.org/project/weekly/)
+[![License](https://img.shields.io/github/license/wronai/weekly?logo=apache&style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
+[![Documentation](https://img.shields.io/readthedocs/weekly/latest?logo=readthedocs&logoColor=white&style=for-the-badge)](https://weekly.readthedocs.io/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=python&logoColor=white)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/imports-isort-%231674b1?style=for-the-badge&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg?style=for-the-badge)](http://mypy-lang.org/)
+[![codecov](https://codecov.io/gh/wronai/weekly/branch/main/graph/badge.svg?token=YOUR-TOKEN-HERE&style=for-the-badge)](https://codecov.io/gh/wronai/weekly)
+[![Build Status](https://github.com/wronai/weekly/actions/workflows/tests.yml/badge.svg?style=for-the-badge)](https://github.com/wronai/weekly/actions)
+[![CodeQL](https://github.com/wronai/weekly/actions/workflows/codeql-analysis.yml/badge.svg?style=for-the-badge)](https://github.com/wronai/weekly/actions/workflows/codeql-analysis.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/wronai/weekly/main.svg?style=for-the-badge)](https://results.pre-commit.ci/latest/github/wronai/weekly/main)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
+[![CodeFactor](https://www.codefactor.io/repository/github/wronai/weekly/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/wronai/weekly)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/wronai/weekly/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/wronai/weekly)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?style=for-the-badge&logo=dependabot)](https://github.com/dependabot)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge)](CODE_OF_CONDUCT.md)
+[![Discussions](https://img.shields.io/badge/GitHub-Discussions-5865F2?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wronai/weekly/discussions)
+[![Twitter Follow](https://img.shields.io/twitter/follow/wronai?style=for-the-badge&logo=twitter&label=Follow%20%40wronai)](https://twitter.com/wronai)
 
-Weekly is a comprehensive Python project quality analyzer that helps developers maintain high code quality by automatically detecting issues and suggesting improvements. It analyzes various aspects of your Python projects and generates actionable reports.
+Weekly is a comprehensive Python project quality analyzer that helps developers maintain high code quality by automatically detecting issues and suggesting improvements. It analyzes various aspects of your Python projects and generates actionable reports with clear next steps.
 
-## Features
+## ✨ Features
 
 - 🧪 **Test Coverage Analysis**: Check test coverage and test configuration
 - 📚 **Documentation Check**: Verify README, LICENSE, CHANGELOG, and API docs
 - 🔄 **CI/CD Integration**: Detect CI/CD configuration and best practices
 - 📦 **Dependency Analysis**: Identify outdated or vulnerable dependencies
 - 🛠️ **Code Quality**: Check for code style, formatting, and common issues
-- 📊 **Interactive Reports**: Generate detailed reports in multiple formats (JSON, Markdown, Text)
+- 📊 **Interactive Reports**: Generate detailed reports in multiple formats (JSON, Markdown, Text, HTML)
 - 🔍 **Extensible Architecture**: Easy to add custom checkers and rules
 - 🚀 **Fast and Lightweight**: Minimal dependencies, fast analysis
 - 🔄 **Git Integration**: Works seamlessly with Git repositories
+- 🔍 **Multi-Repo Scanning**: Scan multiple Git repositories in a directory structure
+- 📅 **Date-based Filtering**: Only analyze repositories with recent changes
+- 📑 **HTML Reports**: Beautiful, interactive HTML reports with drill-down capabilities
+- 🔒 **Security Checks**: Identify potential security issues in your code
+- 📈 **Trend Analysis**: Track code quality metrics over time
 
-## Installation
+## 🔍 Git Repository Scanning
+
+Weekly can scan multiple Git repositories in a directory structure and generate comprehensive reports for each one, plus a summary report.
+
+### Basic Usage
+
+```bash
+# Scan all Git repositories in ~/github
+weekly scan ~/github
+
+# Only show repositories with changes in the last 7 days (default)
+weekly scan ~/github --since "7 days ago"
+
+# Specify a custom output directory
+weekly scan ~/github -o ./weekly-reports
+
+# Run with 8 parallel jobs for faster scanning
+weekly scan ~/github -j 8
+
+# Generate JSON reports instead of HTML
+weekly scan ~/github --format json
+```
+
+### Example Output
+
+```
+🔍 Scanning Git repositories in /Users/username/github...
+✅ Scan complete! Generated reports for 3 repositories.
+📊 Summary report: weekly-reports/summary.html
+
+✅ org1/repo1: 5 checks
+   ✓ style: Passed
+   ✓ code_quality: Passed
+   ✓ dependencies: 2 outdated packages found
+   ✓ docs: Documentation is 85% complete
+   ✓ tests: 92% test coverage
+```
+
+### Command Options
+
+```
+Usage: weekly scan [OPTIONS] [ROOT_DIR]
+
+  Scan multiple Git repositories and generate reports.
+
+  ROOT_DIR: Directory containing Git repositories (default: current directory)
+
+Options:
+  -o, --output PATH      Output directory for reports (default: ./weekly-reports)
+  -s, --since TEXT        Only include repositories with changes since this date (e.g., "7 days ago", "2023-01-01")
+  --recursive / --no-recursive  Scan directories recursively (default: True)
+  -j, --jobs INTEGER      Number of parallel jobs (default: 4)
+  -f, --format [html|json|markdown]  Output format (default: html)
+  --summary-only          Only generate a summary report, not individual reports
+  -v, --verbose           Show detailed output
+  --help                  Show this message and exit.
+```
+
+### Programmatic Usage
+
+```python
+from pathlib import Path
+from datetime import datetime, timedelta
+from weekly import GitScanner
+
+# Create a scanner instance
+scanner = GitScanner(
+    root_dir=Path.home() / "github",
+    output_dir="weekly-reports",
+    since=datetime.now() - timedelta(days=7),
+    recursive=True,
+    jobs=4
+)
+
+# Run the scan
+results = scanner.scan_all()
+
+# Process results
+for result in results:
+    print(f"{result.repo.org}/{result.repo.name}:")
+    for name, check in result.results.items():
+        status = "✓" if check.is_ok else "✗"
+        print(f"  {status} {name}: {check.message}")
+```
+
+## 🚀 Installation
 
 ### Using pip
 
@@ -47,7 +146,10 @@ git clone https://github.com/wronai/weekly.git
 cd weekly
 
 # Install with Poetry
-poetry install
+poetry install --with dev
+
+# Install pre-commit hooks
+pre-commit install
 
 # Activate the virtual environment
 poetry shell

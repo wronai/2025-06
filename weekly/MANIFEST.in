@@ -1,0 +1,32 @@
+include LICENSE
+include NOTICE
+include README.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include SECURITY.md
+
+# Include package data
+recursive-include weekly *.py
+recursive-include tests *.py
+recursive-include docs *
+
+# Include data files
+recursive-include weekly/data *
+recursive-include examples *
+
+# Exclude common files we don't want to include
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *~$*.py
+prune .github
+prune .mypy_cache
+prune .pytest_cache
+prune .tox
+prune build
+prune dist
+prune *.egg-info
+
+# Include type information for mypy
+recursive-include weekly *.pyi
+recursive-include tests *.pyi
