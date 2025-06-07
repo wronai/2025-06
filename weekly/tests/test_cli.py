@@ -66,7 +66,7 @@ def test_cli_help(runner):
     """Test the CLI help output."""
     result = runner.invoke(main, ["--help"])
     assert result.exit_code == 0
-    assert "Generate comprehensive reports from Git repositories" in result.output
+    assert "Weekly - Analyze your Python project's quality and get suggestions for improvement." in result.output
     assert "analyze" in result.output
     assert "scan" in result.output
 

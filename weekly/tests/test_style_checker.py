@@ -153,11 +153,12 @@ def test_mypy_check_with_type_issues(tmp_path, style_checker):
     
     # Verify the result
     assert isinstance(result, CheckResult)
-    # The test file has no actual type issues, so we expect success
-    # Note: The test is patching subprocess.run, so we need to check the mock was called
-    assert result.status == "success"
+    # The test file has type issues, so we expect a warning
+    assert result.status == "warning"
     # The mock should have been called with mypy command
     assert any("mypy" in str(call) for call in mock_run.call_args_list)
+    # There should be at least one issue found
+    assert len(style_checker.issues) > 0
 
 
 def test_parse_black_output(style_checker):
